@@ -1,0 +1,59 @@
+version: '3.7'
+services:
+  guacd:
+    container_name: guacd
+    hostname: guacd
+    image: guacamole/guacd
+    expose:
+      - "4822"
+    networks:
+      - the_net
+  guacamole:
+    container_name: guacamole
+    hostname: guacamole
+    image: guacamole/guacamole
+    environment:
+      GUACD_HOSTNAME: ${GUACD_HOSTNAME}
+      GUACD_PORT: ${GUACD_PORT}
+      MYSQL_HOSTNAME: ${MYSQL_HOSTNAME}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      GUACAMOLE_HOME: ${GUACAMOLE_HOME}
+    volumes:
+      - ./user-mapping.xml:/etc/guacamole/user-mapping.xml:ro
+    depends_on:
+      - guacd
+      - mysql
+    ports:
+      - 8080:8080
+    networks:
+      - the_net
+  mysql:
+    container_name: mysql
+    hostname: mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - type: bind
+        source: ./initdb.sql
+        target: /docker-entrypoint-initdb.d/initdb.sql
+    expose:
+      - "3306"
+      - "33060"
+    networks:
+      - the_net
+  vnc:
+    container_name: vnc
+    hostname: vnc
+    image: consol/ubuntu-xfce-vnc
+    environment:
+      VNC_PW: ${VNC_PW}
+    expose:
+      - "5901"
+      - "6901"
+    networks: 
+      - the_net
+networks:
+  the_net:
