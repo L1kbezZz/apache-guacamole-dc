@@ -10,7 +10,7 @@
 
         <connection name="VNC RO">
             <protocol>vnc</protocol>
-            <param name="hostname">172.19.0.3</param>
+            <param name="hostname">vnc</param>
             <param name="port">5901</param>
             <param name="password">vncpass</param>
             <param name="read-only">true</param>
