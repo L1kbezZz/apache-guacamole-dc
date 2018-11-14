@@ -53,7 +53,12 @@ services:
     expose:
       - "5901"
       - "6901"
+    volumes:
+      - type: bind
+        source: ./run_browser.sh
+        target: /docker-entrypoint-initdb.d/run_browser.sh
     networks: 
       - the_net
+    command: /bin/bash -c "sh /docker-entrypoint-initdb.d/run_browser.sh"
 networks:
   the_net:
